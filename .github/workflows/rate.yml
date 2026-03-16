@@ -20,4 +20,4 @@ jobs:
             -H "Priority: default" \
             -H "Tags: euro" \
             -d "1 EUR = $RATE HUF" \
-            https://ntfy.sh/eurhuf-dani-alerts
+            https://ntfy.sh/eurhuf
