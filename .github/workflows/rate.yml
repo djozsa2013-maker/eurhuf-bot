@@ -13,7 +13,9 @@ jobs:
     steps:
       - name: Fetch rate and notify
         run: |
-          RATE=$(curl -s "https://open.er-api.com/v6/latest/EUR" | python3 -c "import sys,json; d=json.load(sys.stdin); print(f\"{d['rates']['HUF']:.2f}\")")
+          RATE=$(curl -s "https://query1.finance.yahoo.com/v8/finance/chart/EURHUF=X" \
+            -H "User-Agent: Mozilla/5.0" | \
+            python3 -c "import sys,json; d=json.load(sys.stdin); print(f\"{d['chart']['result'][0]['meta']['regularMarketPrice']:.2f}\")")
           HOUR=$(TZ='Europe/Budapest' date +%H:%M)
           curl -s \
             -H "Title: EUR/HUF · $HOUR" \
