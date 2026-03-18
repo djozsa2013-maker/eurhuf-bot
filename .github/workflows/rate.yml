@@ -2,10 +2,10 @@ name: EUR/HUF Alert
 
 on:
   schedule:
-    - cron: '0 6 * * 1-5'   # 08:00 Budapest (UTC+2)
-    - cron: '0 10 * * 1-5'  # 12:00 Budapest
-    - cron: '0 14 * * 1-5'  # 16:00 Budapest
-  workflow_dispatch:          # lets you test it manually
+    - cron: '0 6 * * 1-5'
+    - cron: '0 10 * * 1-5'
+    - cron: '0 14 * * 1-5'
+  workflow_dispatch:
 
 jobs:
   send-rate:
@@ -13,7 +13,7 @@ jobs:
     steps:
       - name: Fetch rate and notify
         run: |
-          RATE=$(curl -s "https://api.frankfurter.app/latest?from=EUR&to=HUF" | python3 -c "import sys,json; d=json.load(sys.stdin); print(f\"{d['rates']['HUF']:.2f}\")")
+          RATE=$(curl -s "https://api.wise.com/v1/rates?source=EUR&target=HUF" | python3 -c "import sys,json; d=json.load(sys.stdin); print(f\"{d[0]['rate']:.2f}\")")
           HOUR=$(TZ='Europe/Budapest' date +%H:%M)
           curl -s \
             -H "Title: EUR/HUF · $HOUR" \
