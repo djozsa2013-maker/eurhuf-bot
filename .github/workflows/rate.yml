@@ -13,7 +13,18 @@ jobs:
     steps:
       - name: Fetch rate and notify
         run: |
-          RATE=$(curl -s "https://api.wise.com/v1/rates?source=EUR&target=HUF" | python3 -c "import sys,json; d=json.load(sys.stdin); print(f\"{d[0]['rate']:.2f}\")")
+          RATE=$(python3 - <<'EOF'
+import urllib.request, xml.etree.ElementTree as ET
+url = "https://www.mnb.hu/arfolyamok.asmx/GetCurrentExchangeRates"
+with urllib.request.urlopen(url) as r:
+    root = ET.fromstring(r.read())
+for day in root.iter('Day'):
+    for item in day.iter('Rate'):
+        if item.get('curr') == 'EUR':
+            print(f"{float(item.text.replace(',', '.')):.2f}")
+            exit()
+EOF
+)
           HOUR=$(TZ='Europe/Budapest' date +%H:%M)
           curl -s \
             -H "Title: EUR/HUF · $HOUR" \
